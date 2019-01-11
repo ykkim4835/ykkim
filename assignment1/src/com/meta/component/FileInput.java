@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class FileInput implements WordInput {
+public class FileInput implements StrInput {
 
 	@Override
 	public String execute() throws IOException {

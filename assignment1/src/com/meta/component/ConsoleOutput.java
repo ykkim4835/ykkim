@@ -1,6 +1,6 @@
 package com.meta.component;
 
-public class ConsoleOutput implements WordOutput{
+public class ConsoleOutput implements StrOutput{
 	
 	@Override
 	public void execute(int strLength) {

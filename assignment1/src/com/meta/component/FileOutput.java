@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileOutput implements WordOutput {
+public class FileOutput implements StrOutput {
 	
 	@Override
 	public void execute(int strLength) throws IOException{

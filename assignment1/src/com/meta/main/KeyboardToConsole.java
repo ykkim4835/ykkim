@@ -1,20 +1,24 @@
 package com.meta.main;
 
-import com.meta.component.CommonInput;
-import com.meta.component.CommonOutput;
+import java.io.IOException;
+
+import com.meta.component.ConsoleOutput;
 import com.meta.component.CountWord;
+import com.meta.component.KeyboardInput;
+import com.meta.component.StrInput;
+import com.meta.component.StrOutput;
 
 public class KeyboardToConsole {
 	
-	public static void main(String[] args) {
-		CommonInput commonInput = new CommonInput();
-		String str = commonInput.keyboard();
+	public static void main(String[] args) throws IOException {
+		StrInput input = new KeyboardInput();
+		String str = input.execute();
 		
 		CountWord countWord = new CountWord();
 		int strLength = countWord.execute(str);
 		
-		CommonOutput commonOutput = new CommonOutput();
-		commonOutput.console(strLength);
+		StrOutput output = new ConsoleOutput();
+		output.execute(strLength);
 	}
 
 }
