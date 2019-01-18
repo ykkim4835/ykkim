@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="fileInput" class="com.meta.component.FileInput"/>
+		
+	<bean id="consoleOutput" class="com.meta.component.ConsoleOutput"/>
+	
+	<bean id="countWord" class="com.meta.component.CountWord"/>
+	
+	<bean id="strInputOutput" class="com.meta.component.StrInputOutput">
+		<property name="strInput" ref="fileInput"/>
+		<property name="strOutput" ref="consoleOutput"/>
+		<property name="countWord" ref="countWord"/>
+	</bean>
+	
+</beans>
