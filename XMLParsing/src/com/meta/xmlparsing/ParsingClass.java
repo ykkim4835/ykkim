@@ -88,7 +88,7 @@ public class ParsingClass {
 	}
 
 	public void saveBaseXML() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-		BufferedReader in = new BufferedReader(new FileReader("T_BASEFILE_TB.xml"));
+		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/base/T_BASEFILE_TB.xml"));
 		NodeList rowList = setNodeList(in);
 
 		BaseDTO baseDTO = null;
@@ -125,7 +125,7 @@ public class ParsingClass {
 
 	public void saveFXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
-		BufferedReader in = new BufferedReader(new FileReader("F_" + idx + "_TB.xml"));
+		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/f/F_" + idx + "_TB.xml"));
 		NodeList rowList = setNodeList(in);
 
 		FDTO fDTO = null;
@@ -159,7 +159,7 @@ public class ParsingClass {
 
 	public void savePXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
-		BufferedReader in = new BufferedReader(new FileReader("P_" + idx + "_TB.xml"));
+		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/p/P_" + idx + "_TB.xml"));
 		NodeList rowList = setNodeList(in);
 
 		PDTO pDTO = null;
@@ -337,7 +337,7 @@ public class ParsingClass {
 
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(
-					new BufferedWriter(new FileWriter("C://xmlTest/T_" + fileName + "_TB.xml")));
+					new BufferedWriter(new FileWriter("./xmlFile/t/T_" + fileName + "_TB.xml")));
 			transformer.transform(source, result);
 		} catch (Exception e) {
 			e.printStackTrace();
