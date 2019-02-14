@@ -31,9 +31,15 @@ import org.xml.sax.SAXException;
 
 public class ParsingClass {
 
-	ArrayList<BaseDTO> baseList = new ArrayList<>();
-	ArrayList<FDTO> fList = new ArrayList<>();
-	ArrayList<PDTO> pList = new ArrayList<>();
+	ArrayList<BaseDTO> baseList = null;
+	ArrayList<FDTO> fList = null;
+	ArrayList<PDTO> pList = null;
+	
+	public ParsingClass() {
+		this.baseList = new ArrayList<>();
+		this.fList = new ArrayList<>();
+		this.pList = new ArrayList<>();
+	}
 
 	public void execute() throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
 		long start = 0;
@@ -94,6 +100,7 @@ public class ParsingClass {
 			childList = rowList.item(i).getChildNodes();
 			if (childList.getLength() > 0) {
 				for (int j = 0; j < childList.getLength(); j++) {
+//					System.out.println(childList.item(j).getNodeName());
 					if (childList.item(j).getNodeName().equals("#text") == false) {
 						tempList.add(childList.item(j).getTextContent());
 					}
