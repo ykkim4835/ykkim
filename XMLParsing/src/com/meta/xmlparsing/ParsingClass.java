@@ -2,8 +2,6 @@ package com.meta.xmlparsing;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -60,15 +57,16 @@ public class ParsingClass {
 		}
 		end = System.currentTimeMillis();
 		System.out.println("실행 시간 : " + ((end - start) / 1000.0) + "초");
-		System.out.println("끝!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("끝!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 
 	public NodeList setNodeList(BufferedReader in)
 			throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
 		String str = null;
 		StringBuilder sb = new StringBuilder();
-
+		
 		while ((str = in.readLine()) != null) {
+			str = str.trim();
 			sb.append(str);
 		}
 		String xml = sb.toString();
@@ -100,7 +98,6 @@ public class ParsingClass {
 			childList = rowList.item(i).getChildNodes();
 			if (childList.getLength() > 0) {
 				for (int j = 0; j < childList.getLength(); j++) {
-//					System.out.println(childList.item(j).getNodeName());
 					if (childList.item(j).getNodeName().equals("#text") == false) {
 						tempList.add(childList.item(j).getTextContent());
 					}
@@ -194,7 +191,9 @@ public class ParsingClass {
 		for (int i = 0; i < fList.size(); i++) {
 			int intSR = Integer.parseInt(fList.get(i).getSimilar_rate());
 			int result = intSR / 100;
-			if (result > 15) {
+			// 조건에 만족하면 overFity변수에 true를 저장
+			// 조건: similar_rate / 100 > 15
+			if (result > 15) { 
 				fList.get(i).setOverFifty(true);
 			}
 		}
@@ -202,10 +201,13 @@ public class ParsingClass {
 
 	public void equalP_id() {
 		for (int i = 0; i < fList.size(); i++) {
+			// 조건에 만족하면(overFity변수가 true면) 실행
+			// 실제 조건: similar_rate / 100 > 15
 			if (fList.get(i).isOverFifty()) {
 				String fP_id = fList.get(i).getP_id();
 				for (int j = 0; j < pList.size(); j++) {
 					String pP_id = pList.get(j).getP_id();
+					// fFile의 p_id와 pFile의 p_id값을 비교하여 같은것이 있으면 equalP_id에 true를 저장
 					if (fP_id.equals(pP_id)) {
 						fList.get(i).setEqualP_id(true);
 					}
@@ -216,9 +218,12 @@ public class ParsingClass {
 
 	public void license_id() {
 		for (int i = 0; i < fList.size(); i++) {
+			// overFifty와 equalP_id 변수가 둘다 true일때 실행
+			// 실제 조건: similar_rate / 100 > 15 이고 fFile의 p_id 와 pFile의 p_id가 같은것이 있으면 실행
 			if (fList.get(i).isOverFifty() && fList.get(i).isEqualP_id()) {
 				for (int j = 0; j < pList.size(); j++) {
 					String lincense_id = pList.get(j).getLicense_id();
+					// fFile과 pFile의 p_id 비교 후 같으면 comment에 lincense_id를 넣어준다.
 					if (fList.get(i).getP_id().equals(pList.get(j).getP_id())) {
 						fList.get(i).setComment(lincense_id);
 					}
@@ -283,7 +288,8 @@ public class ParsingClass {
 
 			Element rows = doc.createElement("ROWS");
 			table.appendChild(rows);
-
+			
+			// element에 저장
 			for (int i = 0; i < fList.size(); i++) {
 				Element row = doc.createElement("ROW");
 				rows.appendChild(row);
@@ -327,13 +333,7 @@ public class ParsingClass {
 
 			// XML 파일로 쓰기
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
 			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(
@@ -343,7 +343,8 @@ public class ParsingClass {
 			e.printStackTrace();
 		}
 	}
-
+	
+	// ArrayList 재사용을 위한 초기화
 	public void init() {
 		fList.clear();
 		pList.clear();
