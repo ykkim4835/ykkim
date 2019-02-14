@@ -71,10 +71,11 @@ public class ParsingClass {
 		}
 		String xml = sb.toString();
 		in.close();
-
+		
 		// XML Document 梓端 持失
 		InputSource is = new InputSource(new StringReader(xml));
 		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
+//		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path);
 
 		// xpath 持失
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -87,6 +88,7 @@ public class ParsingClass {
 
 	public void saveBaseXML() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/base/T_BASEFILE_TB.xml"));
+//		String path = "./xmlFile/base/T_BASEFILE_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		BaseDTO baseDTO = null;
@@ -123,6 +125,7 @@ public class ParsingClass {
 	public void saveFXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/f/F_" + idx + "_TB.xml"));
+//		String path = "./xmlFile/f/F_" + idx + "_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		FDTO fDTO = null;
@@ -157,6 +160,7 @@ public class ParsingClass {
 	public void savePXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/p/P_" + idx + "_TB.xml"));
+//		String path = "./xmlFile/p/P_" + idx + "_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		PDTO pDTO = null;
