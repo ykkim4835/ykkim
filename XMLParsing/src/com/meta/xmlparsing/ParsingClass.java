@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,7 +32,7 @@ public class ParsingClass {
 	ArrayList<BaseDTO> baseList = null;
 	ArrayList<FDTO> fList = null;
 	ArrayList<PDTO> pList = null;
-	
+
 	public ParsingClass() {
 		this.baseList = new ArrayList<>();
 		this.fList = new ArrayList<>();
@@ -56,26 +57,26 @@ public class ParsingClass {
 			init();
 		}
 		end = System.currentTimeMillis();
-		System.out.println("실행 시간 : " + ((end - start) / 1000.0) + "초");
-		System.out.println("끝!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("실행 시간 : " + (end - start) + "ms");
 	}
 
 	public NodeList setNodeList(BufferedReader in)
 			throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
 		String str = null;
 		StringBuilder sb = new StringBuilder();
-		
+
 		while ((str = in.readLine()) != null) {
 			str = str.trim();
 			sb.append(str);
 		}
 		String xml = sb.toString();
 		in.close();
-		
+
 		// XML Document 객체 생성
 		InputSource is = new InputSource(new StringReader(xml));
 		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
-//		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path);
+		// Document document =
+		// DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path);
 
 		// xpath 생성
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -88,7 +89,7 @@ public class ParsingClass {
 
 	public void saveBaseXML() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/base/T_BASEFILE_TB.xml"));
-//		String path = "./xmlFile/base/T_BASEFILE_TB.xml";
+		// String path = "./xmlFile/base/T_BASEFILE_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		BaseDTO baseDTO = null;
@@ -125,7 +126,7 @@ public class ParsingClass {
 	public void saveFXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/f/F_" + idx + "_TB.xml"));
-//		String path = "./xmlFile/f/F_" + idx + "_TB.xml";
+		// String path = "./xmlFile/f/F_" + idx + "_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		FDTO fDTO = null;
@@ -160,7 +161,7 @@ public class ParsingClass {
 	public void savePXML(String idx)
 			throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
 		BufferedReader in = new BufferedReader(new FileReader("./xmlFile/p/P_" + idx + "_TB.xml"));
-//		String path = "./xmlFile/p/P_" + idx + "_TB.xml";
+		// String path = "./xmlFile/p/P_" + idx + "_TB.xml";
 		NodeList rowList = setNodeList(in);
 
 		PDTO pDTO = null;
@@ -197,7 +198,7 @@ public class ParsingClass {
 			int result = intSR / 100;
 			// 조건에 만족하면 overFity변수에 true를 저장
 			// 조건: similar_rate / 100 > 15
-			if (result > 15) { 
+			if (result > 15) {
 				fList.get(i).setOverFifty(true);
 			}
 		}
@@ -211,7 +212,8 @@ public class ParsingClass {
 				String fP_id = fList.get(i).getP_id();
 				for (int j = 0; j < pList.size(); j++) {
 					String pP_id = pList.get(j).getP_id();
-					// fFile의 p_id와 pFile의 p_id값을 비교하여 같은것이 있으면 equalP_id에 true를 저장
+					// fFile의 p_id와 pFile의 p_id값을 비교하여 같은것이 있으면 equalP_id에 true를
+					// 저장
 					if (fP_id.equals(pP_id)) {
 						fList.get(i).setEqualP_id(true);
 					}
@@ -223,7 +225,8 @@ public class ParsingClass {
 	public void license_id() {
 		for (int i = 0; i < fList.size(); i++) {
 			// overFifty와 equalP_id 변수가 둘다 true일때 실행
-			// 실제 조건: similar_rate / 100 > 15 이고 fFile의 p_id 와 pFile의 p_id가 같은것이 있으면 실행
+			// 실제 조건: similar_rate / 100 > 15 이고 fFile의 p_id 와 pFile의 p_id가 같은것이
+			// 있으면 실행
 			if (fList.get(i).isOverFifty() && fList.get(i).isEqualP_id()) {
 				for (int j = 0; j < pList.size(); j++) {
 					String lincense_id = pList.get(j).getLicense_id();
@@ -243,7 +246,7 @@ public class ParsingClass {
 
 			Document doc = docBuilder.newDocument();
 			doc.setXmlStandalone(true);
-	
+
 			Element table = doc.createElement("TABLE");
 			doc.appendChild(table);
 
@@ -253,46 +256,46 @@ public class ParsingClass {
 			Element name = doc.createElement("NAME");
 			name.appendChild(doc.createTextNode("T_" + fileName + "_TB"));
 			metadata.appendChild(name);
-			
+
 			Element col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("ROWID"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("VOLUME"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("FILE_NAME"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("RELEASE_NAME"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("SIMILAR_RATE"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("FILE_PATH"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("P_ID"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("EXCLUSION"));
 			metadata.appendChild(col);
-			
+
 			col = doc.createElement("COL");
 			col.appendChild(doc.createTextNode("COMMENT"));
 			metadata.appendChild(col);
 
 			Element rows = doc.createElement("ROWS");
 			table.appendChild(rows);
-			
+
 			Element row = null;
 			Element rowId = null;
 			Element volume = null;
@@ -303,7 +306,7 @@ public class ParsingClass {
 			Element p_id = null;
 			Element exclusion = null;
 			Element comment = null;
-			
+
 			// element에 저장
 			for (int i = 0; i < fList.size(); i++) {
 				row = doc.createElement("ROW");
@@ -358,11 +361,21 @@ public class ParsingClass {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// ArrayList 재사용을 위한 초기화
 	public void init() {
 		fList.clear();
 		pList.clear();
+	}
+
+	public void memoryCheck() throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
+		System.gc();
+		long preUseMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		execute();
+		System.gc();
+		long aftUseMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		long useMemory = (preUseMemory - aftUseMemory);
+		System.out.println("메모리 사용량: " + useMemory);
 	}
 
 }
