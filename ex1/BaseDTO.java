@@ -1,5 +1,6 @@
 package com.meta.xmlparsing;
 
+//T_BASEFILE_TB.xml파일의 <ROW> 태그의 자식태그의 값을 저장하기 위한 DTO 클래스
 public class BaseDTO {
 	
 	private String file_id;

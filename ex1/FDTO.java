@@ -1,9 +1,10 @@
 package com.meta.xmlparsing;
 
+// F_idx_TB.xml파일의 <ROW> 태그의 자식태그의 값을 저장하기 위한 DTO 클래스
 public class FDTO {
 	
-	private boolean overFifty;
-	private boolean equalP_id;
+	private boolean overFifteen; // similar_rate / 100 > 15 조건 확인 변수
+	private boolean equalP_id; // fP_id == pP_id 조건 확인 변수
 	private String rowId;
 	private String volume;
 	private String file_name;
@@ -15,7 +16,7 @@ public class FDTO {
 	private String comment;
 	
 	public FDTO() {
-		this.overFifty = false;
+		this.overFifteen = false;
 		this.equalP_id = false;
 	}
 	public boolean isEqualP_id() {
@@ -24,11 +25,11 @@ public class FDTO {
 	public void setEqualP_id(boolean equalP_id) {
 		this.equalP_id = equalP_id;
 	}
-	public boolean isOverFifty() {
-		return overFifty;
+	public boolean isOverFifteen() {
+		return overFifteen;
 	}
-	public void setOverFifty(boolean overFifty) {
-		this.overFifty = overFifty;
+	public void setOverFifteen(boolean overFifteen) {
+		this.overFifteen = overFifteen;
 	}
 	public String getRowId() {
 		return rowId;

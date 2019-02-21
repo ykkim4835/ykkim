@@ -1,5 +1,6 @@
 package com.meta.xmlparsing;
 
+//P_idx_TB.xml파일의 <ROW> 태그의 자식태그의 값을 저장하기 위한 DTO 클래스
 public class PDTO {
 	
 	private String p_id;
