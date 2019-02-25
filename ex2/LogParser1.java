@@ -70,7 +70,7 @@ public class LogParser1 {
 	}
 	
 	// 시작 시간을 가져오는 메소드
-	public void getStartTime(String str) {
+	private void getStartTime(String str) {
 		String threadId = getThreadId(str);  
 		String startTime = getTime(str); 
 
@@ -81,7 +81,7 @@ public class LogParser1 {
 	}
 	
 	// esb 아이디를 가져오는 메소드
-	public void getEsbId(String str) {
+	private void getEsbId(String str) {
 		String threadId = getThreadId(str); 
 		String esbId = getData(str, "ESB_TRAN_ID : ");
 		
@@ -97,7 +97,7 @@ public class LogParser1 {
 	}
 	
 	// 사이즈를 가져오는 메소드
-	public void getContentLen(String str) {
+	private void getContentLen(String str) {
 		String threadId = getThreadId(str); 
 		String contentLen = getData(str, "Content-Length:");
 
@@ -111,7 +111,7 @@ public class LogParser1 {
 	}
 	
 	// 콜타임을 가져오는 메소드
-	public void getCallTime(String str) {
+	private void getCallTime(String str) {
 		String threadId = getThreadId(str); 
 		String callTime = getData(str, "#galileo call time:");
 		callTime = callTime.replace(" ms", "");
@@ -126,7 +126,7 @@ public class LogParser1 {
 	}
 	
 	// 각 소요시간을 가져오는 메소드
-	public void getRunningTime(String str, BufferedReader in) throws IOException {
+	private void getRunningTime(String str, BufferedReader in) throws IOException {
 		String threadId = getThreadId(str);
 		
 		// 세줄을 강제적을 읽어 들인다.
@@ -160,7 +160,7 @@ public class LogParser1 {
 	}
 	
 	// 종료 시간을 가져오는 메소드
-	public void getEndTime(String str) {
+	private void getEndTime(String str) {
 		String threadId = getThreadId(str);
 		String endTime = getTime(str);
 
@@ -174,7 +174,7 @@ public class LogParser1 {
 	}
 	
 	// file1DTO의 데이터에 한개라도 널값이 저장되어있으면 file1List에서 제거하는 메소드
-	public void removeNull() {
+	private void removeNull() {
 		Iterator<File1DTO> iter = file1List.iterator();
 		while (iter.hasNext()) {
 			File1DTO file1DTO = iter.next();
@@ -197,7 +197,7 @@ public class LogParser1 {
 	}
 	
 	// 문자열이 숫자로 이루어져 있는지 확인하는 메소드
-	public boolean isNumber(String str) {
+	private boolean isNumber(String str) {
 		boolean result = false;
 
 		try {
@@ -210,21 +210,21 @@ public class LogParser1 {
 	}
 	
 	// 로그에서 문자열을 잘라 쓰레드 명을 가져오는 메소드
-	public String getThreadId(String str) {
+	private String getThreadId(String str) {
 		String threadId = str.substring(58, 66);
 		
 		return threadId;
 	}
 	
 	// 로그에서 문자열을 잘라 시작시간을 가져오는 메소드
-	public String getTime(String str) {
+	private String getTime(String str) {
 		String time = str.substring(1, 18);
 		
 		return time;
 	}
 	
 	// 로그에서 문자열을 잘라 데이터를 추출하는 메소드
-	public String getData(String str, String keyword) {
+	private String getData(String str, String keyword) {
 		int keywordIdx = str.indexOf(keyword);
 		int keywordLen = keyword.length();
 		String data = str.substring(keywordIdx + keywordLen);

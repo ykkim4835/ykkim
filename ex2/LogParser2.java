@@ -22,7 +22,7 @@ public class LogParser2 {
 	int idx; // 각 시간 그룹의 첫번째 데이터의 인덱스
 
 	// 분석된 로그로 부터 데이터를 가져오는 메소드(초기화)
-	public void init() throws IOException {
+	private void init() throws IOException {
 		LogParser1 logParser1 = new LogParser1();
 		logParser1.execute();
 
@@ -45,7 +45,7 @@ public class LogParser2 {
 		int minSize = 0;
 		int maxSize = 0;
 		int avgSize = 0;
-		
+
 		// idx가 한번에 각 그룹내의 멤버 수 만큼 증가한다.
 		// while문은 그룹의 수 만큼 반복한다.
 		while (!(idx == file1List.size())) {
@@ -91,19 +91,19 @@ public class LogParser2 {
 	}
 
 	// 각 시간 그룹의 첫번째 데이터의 인덱스 값을 정해주는 메소드
-	public void setIdx(int countProcess) {
+	private void setIdx(int countProcess) {
 		idx += countProcess;
 	}
 
 	// 시작 시간의 초를 뺀 부분을 잘라서 가져오는 메소드(년.월.일 시:분)
-	public String getTime() {
+	private String getTime() {
 		String time = file1List.get(idx).getStartTime().substring(0, 14);
 
 		return time;
 	}
 
 	// 나누어지 시간 그룹안의 멤버 수를 카운트하는 메소드(처리건수)
-	public int getCountProcess(int idx, String time) {
+	private int getCountProcess(int idx, String time) {
 		int countProcess = 0;
 		for (int i = idx; i < file1List.size(); i++) { // i = idx (i에 idx를 대입)
 			String startTime = file1List.get(i).getStartTime();
@@ -118,13 +118,77 @@ public class LogParser2 {
 	}
 
 	// 평균 소요시간을 구하는 메소드
-	public int getAvgTime(int idx, String time) throws ParseException {
+	private int getAvgTime(int idx, String time) throws ParseException {
+		// 걸린시간을 구한다.
+		ArrayList<Integer> tempList = getTakingTime(idx, time);
+
+		// tempList에 저장되어 있는 값들의 평균을 구한다.
+		int avg = getAvgValue(tempList);
+
+		return avg;
+	}
+
+	// 최소 시간을 구하는 메소드
+	private int getMinTime(int idx, String time) throws ParseException {
+		// 걸린시간을 구한다.
+		ArrayList<Integer> tempList = getTakingTime(idx, time);
+
+		// tempList에 저장되어 있는 값들의 최소값을 구한다.
+		int min = getMinValue(tempList);
+
+		return min;
+	}
+
+	// 최대 시간을 구하는 메소드
+	private int getMaxTime(int idx, String time) throws ParseException {
+		// 걸린시간을 구한다.
+		ArrayList<Integer> tempList = getTakingTime(idx, time);
+
+		// tempList에 저장되어 있는 값들의 최대값을 구한다.
+		int max = getMaxValue(tempList);
+
+		return max;
+	}
+
+	// 평균 사이즈를 구하는 메소드
+	private int getAvgSize(int idx, String time) {
+		// 사이즈를 구한다.
+		ArrayList<Integer> tempList = getSize(idx, time);
+
+		// tempList에 저장되어 있는 값들의 평균을 구한다.
+		int avg = getAvgValue(tempList);
+
+		return avg;
+	}
+
+	// 최소 사이즈를 구하는 메소드
+	private int getMinSize(int idx, String time) {
+		// 사이즈를 구한다.
+		ArrayList<Integer> tempList = getSize(idx, time);
+
+		// tempList에 저장되어 있는 값들의 최소값을 구한다.
+		int min = getMinValue(tempList);
+
+		return min;
+	}
+
+	// 최대 사이즈를 구하는 메소드
+	private int getMaxSize(int idx, String time) {
+		// 사이즈를 구한다.
+		ArrayList<Integer> tempList = getSize(idx, time);
+
+		// tempList에 저장되어 있는 값들의 최대값을 구한다.
+		int max = getMaxValue(tempList);
+
+		return max;
+	}
+
+	// 걸린시간을 구하는 메소드
+	private ArrayList<Integer> getTakingTime(int idx, String time) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
-		ArrayList<Long> tempList = new ArrayList<>();
+		ArrayList<Integer> tempList = new ArrayList<>();
 		Date start = null;
 		Date end = null;
-		int sum = 0;
-		int avg = 0;
 
 		// startTime(년.월.일 시:분:초)이 파라미터로 들어온 time 변수(년.월.일 시:분)를 포함하면
 		// 시작시간과 종료시간의 차를 구한다.
@@ -135,92 +199,19 @@ public class LogParser2 {
 				String endTime = file1List.get(i).getEndTime();
 				start = format.parse(startTime);
 				end = format.parse(endTime);
-				long result = end.getTime() - start.getTime();
+				int result = (int) (end.getTime() - start.getTime());
 				tempList.add(result);
 			} else {
 				break;
 			}
 		}
 
-		// tempList에 저장되어 있는 값들의 평균을 구한다.
-		for (int i = 0; i < tempList.size(); i++) {
-			sum += tempList.get(i);
-		}
-
-		avg = sum / tempList.size();
-
-		return avg;
+		return tempList;
 	}
 
-	// 최소 시간을 구하는 메소드
-	public int getMinTime(int idx, String time) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
-		ArrayList<Long> tempList = new ArrayList<>();
-		Date start = null;
-		Date end = null;
-		long min = 0;
-
-		for (int i = idx; i < file1List.size(); i++) {
-			String startTime = file1List.get(i).getStartTime();
-			if (startTime.contains(time)) {
-				String endTime = file1List.get(i).getEndTime();
-				start = format.parse(startTime);
-				end = format.parse(endTime);
-				long result = end.getTime() - start.getTime();
-				tempList.add(result);
-			} else {
-				break;
-			}
-		}
-
-		// tempList에 저장되어 있는 값들의 최소값을 구한다.
-		min = tempList.get(0);
-		for (int i = 1; i < tempList.size(); i++) {
-			if (tempList.get(i) < min) {
-				min = tempList.get(i);
-			}
-		}
-
-		return (int) min;
-	}
-
-	// 최대 시간을 구하는 메소드
-	public int getMaxTime(int idx, String time) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
-		ArrayList<Long> tempList = new ArrayList<>();
-		Date start = null;
-		Date end = null;
-		long max = 0;
-
-		for (int i = idx; i < file1List.size(); i++) {
-			String startTime = file1List.get(i).getStartTime();
-			if (startTime.contains(time)) {
-				String endTime = file1List.get(i).getEndTime();
-				start = format.parse(startTime);
-				end = format.parse(endTime);
-				long result = end.getTime() - start.getTime();
-				tempList.add(result);
-			} else {
-				break;
-			}
-		}
-
-		// tempList에 저장되어 있는 값들의 최대값을 구한다.
-		max = tempList.get(0);
-		for (int i = 1; i < tempList.size(); i++) {
-			if (tempList.get(i) > max) {
-				max = tempList.get(i);
-			}
-		}
-
-		return (int) max;
-	}
-
-	// 평균 사이즈를 구하는 메소드
-	public int getAvgSize(int idx, String time) {
+	// 사이즈를 구하는 메소드
+	private ArrayList<Integer> getSize(int idx, String time) {
 		ArrayList<Integer> tempList = new ArrayList<>();
-		int sum = 0;
-		int avg = 0;
 
 		// startTime(년.월.일 시:분:초)이 파라미터로 들어온 time 변수(년.월.일 시:분)를 포함하면
 		// 사이즈를 tempList에 넣는다.
@@ -235,7 +226,13 @@ public class LogParser2 {
 			}
 		}
 
-		// tempList에 저장되어 있는 값들의 평균값을 구한다.
+		return tempList;
+	}
+
+	// 평균값을 구하는 메소드
+	private int getAvgValue(ArrayList<Integer> tempList) {
+		int sum = 0;
+		int avg = 0;
 		for (int i = 0; i < tempList.size(); i++) {
 			sum += tempList.get(i);
 		}
@@ -245,23 +242,9 @@ public class LogParser2 {
 		return avg;
 	}
 
-	// 최소 사이즈를 구하는 메소드
-	public int getMinSize(int idx, String time) {
-		ArrayList<Integer> tempList = new ArrayList<>();
+	// 최소값을 구한는 메소드
+	private int getMinValue(ArrayList<Integer> tempList) {
 		int min = 0;
-
-		for (int i = idx; i < file1List.size(); i++) {
-			String startTime = file1List.get(i).getStartTime();
-			if (startTime.contains(time)) {
-				String contentLen = file1List.get(i).getContentLen();
-				int intContentLen = Integer.parseInt(contentLen);
-				tempList.add(intContentLen);
-			} else {
-				break;
-			}
-		}
-
-		// tempList에 저장되어 있는 값들의 최소값을 구한다.
 		min = tempList.get(0);
 		for (int i = 1; i < tempList.size(); i++) {
 			if (tempList.get(i) < min) {
@@ -271,23 +254,9 @@ public class LogParser2 {
 		return min;
 	}
 
-	// 최대 사이즈를 구하는 메소드
-	public int getMaxSize(int idx, String time) {
-		ArrayList<Integer> tempList = new ArrayList<>();
+	// 최대값을 구하는 메소드
+	private int getMaxValue(ArrayList<Integer> tempList) {
 		int max = 0;
-
-		for (int i = idx; i < file1List.size(); i++) {
-			String startTime = file1List.get(i).getStartTime();
-			if (startTime.contains(time)) {
-				String contentLen = file1List.get(i).getContentLen();
-				int intContentLen = Integer.parseInt(contentLen);
-				tempList.add(intContentLen);
-			} else {
-				break;
-			}
-		}
-
-		// tempList에 저장되어 있는 값들의 최대값을 구한다.
 		max = tempList.get(0);
 		for (int i = 1; i < tempList.size(); i++) {
 			if (tempList.get(i) > max) {
